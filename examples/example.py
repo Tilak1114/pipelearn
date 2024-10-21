@@ -22,4 +22,7 @@ if __name__ == '__main__':
                      test_dir_path=test_dir_path, 
                      val_dir_path=val_dir_path, 
                      labels=labels, 
-                     should_train=True,)
+                     should_train=True,
+                     train_epochs=3,
+                     device='cuda:1'
+                     )

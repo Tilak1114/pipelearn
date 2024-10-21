@@ -53,17 +53,16 @@ class Pipeline:
         else:
             raise ValueError(f"Learning type {learning_type} is not supported.")
 
-    def execute(self, train_dir_path: str, test_dir_path: str, val_dir_path: str, labels: List[str], should_train: bool) -> None:
-        """
-        Execute the pipeline by loading, preprocessing, and training/evaluating the data.
+    def execute(self, train_dir_path: str, 
+                test_dir_path: str, 
+                val_dir_path: str, 
+                labels: List[str], 
+                should_train: bool,
+                train_epochs=10,
+                device='cuda',
+                model_ckpt_path: str='./ckpt/yolo_model.pt',
+                ) -> None:
 
-        Args:
-            train_dir_path: Path to the training images directory.
-            test_dir_path: Path to the testing images directory.
-            val_dir_path: Path to the validation images directory.
-            labels: List of labels for annotation.
-            should_train: Whether to train the model (True) or just evaluate it (False).
-        """
         # Call get_data to perform detection
         detections = self.ingestion_component.get_data(
             train_dir_path=train_dir_path,
@@ -119,7 +118,14 @@ class Pipeline:
         preprocessed_data = self.ingestion_component.process(saved_detections_or_yaml=yaml_file_path)
 
         if should_train:
-            self.learning_component.train(preprocessed_data)
+             # Ensure that the directory for model_ckpt_path exists
+            ckpt_dir = os.path.dirname(model_ckpt_path)
+            os.makedirs(ckpt_dir, exist_ok=True)
+
+            self.learning_component.train(preprocessed_data, 
+                                          epochs=train_epochs, 
+                                          device=device, 
+                                          model_ckpt_path=model_ckpt_path)
         else:
             accuracy = self.learning_component.evaluate(preprocessed_data)
             print(f"Model Accuracy: {accuracy}")

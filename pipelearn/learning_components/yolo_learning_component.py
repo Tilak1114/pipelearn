@@ -16,7 +16,11 @@ class YOLOLearningComponent(ILearningComponent):
         """
         self.model = YOLOWorld(model_path)  # Load the YOLOWorld model
 
-    def train(self, data: LearningComponentData) -> None:
+    def train(self, 
+              data: LearningComponentData,
+              epochs, 
+              device,
+              model_ckpt_path: str) -> None:
         """
         Train the YOLO model using the LearningComponentData.
         
@@ -24,7 +28,9 @@ class YOLOLearningComponent(ILearningComponent):
             data: The LearningComponentData object containing the path to the dataset configuration.
         """
         if data.model_type == ModelType.YOLO:
-            results = self.model.train(data=data.data_path, epochs=100, imgsz=720, device="cuda")
+            # TODO: Change hardcoded imgsz
+            results = self.model.train(data=data.data_path, epochs=epochs, imgsz=720, device=device)
+            self.model.save(filename=model_ckpt_path)
             print(f"Training complete. Results: {results}")
         else:
             raise ValueError("Incompatible data type for YOLO training")

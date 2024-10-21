@@ -1,0 +1,3 @@
+.venv/
+/dataset
+yolov8x-worldv2.pt

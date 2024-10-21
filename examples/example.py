@@ -9,7 +9,7 @@ if __name__ == '__main__':
     # Create the pipeline
     pipeline = Pipeline(ingestion_type, learning_type)
 
-    dataset_dir = './dataset'
+    dataset_dir = '../pipelearn/dataset'
     
     # Set directory paths and labels
     train_dir_path = f"{dataset_dir}/train/images"
@@ -23,6 +23,6 @@ if __name__ == '__main__':
                      val_dir_path=val_dir_path, 
                      labels=labels, 
                      should_train=True,
-                     train_epochs=3,
+                     train_epochs=1,
                      device='cuda:1'
                      )

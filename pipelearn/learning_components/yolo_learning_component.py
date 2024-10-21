@@ -31,7 +31,7 @@ class YOLOLearningComponent(ILearningComponent):
             # TODO: Change hardcoded imgsz
             results = self.model.train(data=data.data_path, epochs=epochs, imgsz=720, device=device)
             self.model.save(filename=model_ckpt_path)
-            print(f"Training complete. Results: {results}")
+            print(f"Training complete! Results: {results.results_dict}")
         else:
             raise ValueError("Incompatible data type for YOLO training")
 

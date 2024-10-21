@@ -100,9 +100,10 @@ class Pipeline:
 
         # YAML data
         yaml_data = {
-            'train': '../train/images',
-            'val': '../valid/images',
-            'test': '../test/images',
+            'path': f"{root_dir}",
+            'train': 'train/images',
+            'val': 'val/images',
+            'test': 'test/images',
             'nc': len(labels),
             'names': labels  # Directly pass the list of labels
         }

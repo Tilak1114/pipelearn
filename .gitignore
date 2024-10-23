@@ -2,3 +2,5 @@
 /dataset
 *.pt
 /runs
+/ckpt
+/pipeline_data_store

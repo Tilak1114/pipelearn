@@ -53,7 +53,8 @@ class Pipeline:
         else:
             raise ValueError(f"Learning type {learning_type} is not supported.")
 
-    def execute(self, train_dir_path: str, 
+    def execute(self, 
+                train_dir_path: str, 
                 test_dir_path: str, 
                 val_dir_path: str, 
                 labels: List[str], 

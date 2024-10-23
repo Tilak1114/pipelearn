@@ -91,3 +91,11 @@ class DataAnnotator(ABC):
             None
         """
         pass
+    
+    @abstractmethod
+    def is_batch_annotated(self, batch_id):
+        pass
+
+    @abstractmethod
+    def add_log_entry(self, **kwargs):
+        pass

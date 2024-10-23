@@ -1,8 +1,9 @@
 from pipelearn.data.learning_component_data import LearningComponentData, ModelType
 from pipelearn.annotator.grounding_dino_annotator import GroundingDinoAnnotator
 import os
+from pipelearn.interfaces.base_data_ingestion import IDataIngestion
 
-class GroundingDINOIngestion:
+class GroundingDINOIngestion(IDataIngestion):
     """
     Data ingestion class that uses the Grounding Dino Annotator for object detection 
     and converts data to LearningComponentData.

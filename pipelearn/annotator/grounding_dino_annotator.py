@@ -3,6 +3,8 @@ from typing import List, Optional
 import torch
 from transformers import pipeline
 import cv2
+import os
+import json
 
 class GroundingDinoAnnotator(DataAnnotator):
     """
@@ -15,7 +17,9 @@ class GroundingDinoAnnotator(DataAnnotator):
     Methods:
         detect_and_annotate: Performs object detection and returns a list of DetectionResult objects.
     """
-    def __init__(self, detector_id: Optional[str] = None):
+    def __init__(self, 
+                 detector_id: Optional[str] = None, 
+                 log_file='./logs/gd_annotator.json'):
         """
         Initializes the GroundingDinoAnnotator class.
 
@@ -23,14 +27,37 @@ class GroundingDinoAnnotator(DataAnnotator):
             detector_id (str): The ID of the object detection model to use. Defaults to "IDEA-Research/grounding-dino-base".
         """
         super().__init__()
-        device = "cuda" if torch.cuda.is_available() else "cpu"
         detector_id = detector_id if detector_id is not None else "IDEA-Research/grounding-dino-base"
         self.object_detector = pipeline(
-            model=detector_id, task="zero-shot-object-detection", device=device)
+            model=detector_id, task="zero-shot-object-detection")
+        self.log_file = log_file
+    
+    def is_batch_annotated(self, batch_id):
+        log = self.load_annotation_log()
+        return any(entry['batch_id'] == batch_id for entry in log)
+    
+    def load_annotation_log(self,):
+        if os.path.exists(self.log_file):
+            with open(self.log_file, 'r') as f:
+                return json.load(f)
+        else:
+            return []
+    
+    def add_log_entry(self, batch_id, timestamp):
+        log_dict = {
+            "batch_id":batch_id,
+            "timestamp":timestamp
+        }
+        with open(self.log_file, 'a') as f:
+            json.dump(log_dict, f)
+            f.write('\n') 
+            
+        print(f"Logged annotation for batch {log_dict['batch_id']} at {log_dict['timestamp']}")
 
     def detect_and_annotate(self,
                             image: str,
                             labels: List[str],
+                            device='cuda',
                             **kwargs):
         """
         Performs object detection on the input image and returns a list of DetectionResult objects.
@@ -48,6 +75,8 @@ class GroundingDinoAnnotator(DataAnnotator):
 
         labels = [label if label.endswith(
             ".") else label+"." for label in labels]
+
+        self.object_detector = self.object_detector.to(device=device)
 
         results = self.object_detector(
             image,  candidate_labels=labels, threshold=threshold)

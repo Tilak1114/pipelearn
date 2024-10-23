@@ -61,15 +61,16 @@ async def annotator_agent(annotator_config):
 
     annotator_type = annotator_config["type"]
     labels = annotator_config["labels"]
+    device = annotator_config['device']
 
     if annotator_type == 'grounding_dino':
-        annotator: DataAnnotator = GroundingDinoAnnotator(log_file=ANNOTATION_LOG_FILE)
+        annotator: DataAnnotator = GroundingDinoAnnotator(log_file=ANNOTATION_LOG_FILE, device=device)
     else:
         raise ValueError(f"Unknown annotator type {annotator_type}")
 
     with State(**annotator_backend_kwargs) as state:
         while True:
-            if hasattr(state, "data_batch"):
+            if state and hasattr(state, "data_batch"):
                 dir_path = state.data_batch["dir_path"]
                 timestamp = state.data_batch["timestamp"]
                 
@@ -103,7 +104,7 @@ async def annotator_agent(annotator_config):
                         yolo_annotations = YOLOUtils.convert_to_yolo_format(annotations, image_path)
                         YOLOUtils.save_yolo_annotations(yolo_annotations, image_path, output_dir)
                     
-                    annotator.log_annotation(dir_path, timestamp)  # Log the annotation as completed
+                    annotator.add_log_entry(dir_path, timestamp)  # Log the annotation as completed
             else:
                 print("Annotator: No data batch available.")
             

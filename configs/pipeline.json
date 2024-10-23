@@ -1,6 +1,6 @@
 {
     "data_publisher_config": {
-        "data_source": "./pipeline_data_source",
+        "data_source": "./pipeline_data_store",
         "backend_kwargs": {
             "shared_memory_size_kb": 1024,
             "url": [
@@ -16,6 +16,7 @@
     "annotator_config": {
         "type": "grounding_dino",
         "labels": ["spoon", "fork"],
+        "device": "cuda:1",
         "backend_kwargs": {
             "shared_memory_size_kb": 1024,
             "url": [

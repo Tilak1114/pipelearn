@@ -28,14 +28,14 @@ dependencies = [
   "numpy==1.26.4",
   "Pillow==10.4.0",
   "setuptools==68.2.2",
-  "torch==2.2.2",
+  "torch==2.5.0",
   "transformers==4.44.2",
   "pydantic==2.7.4",
   "pytest==8.2.2",
   "embdata",
   "ultralytics",
   "pandas", 
-  "git+https://github.com/openai/CLIP.git",
+  "openai-clip",
 ]
 
 [project.urls]

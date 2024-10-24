@@ -49,22 +49,26 @@ class DataSourceAgent(Agent):
                 "The data source doesnt have a publish state. Please set publish_to attribute in your config")
 
         with State(**backend_kwargs) as state:
-            async for image_path in image_repo(dir_source):
-                try:
-                    # Create DataSourceData and publish it
-                    timestamp = datetime.now().isoformat()
+            while True:
+                async for image_path in image_repo(dir_source):
+                    try:
+                        # Create DataSourceData and publish it
+                        timestamp = datetime.now().isoformat()
 
-                    data_source_data = DataSourceData(
-                        world=World(
-                            image=Image(image_path)
-                        ),
-                        uid=f"data_source_{timestamp}",
-                    )
+                        data_source_data = DataSourceData(
+                            world=World(
+                                image=Image(image_path)
+                            ),
+                            uid=f"data_source_{image_path}",
+                        )
 
-                    state.__setattr__(publish_attr, data_source_data)
+                        state.__setattr__(publish_attr, data_source_data.model_dump_json())
+                        print(
+                            f"Data Publisher: Published {image_path} at {timestamp}")
 
-                    print(
-                        f"Data Publisher: Published {image_path} at {timestamp}")
+                    except Exception as e:
+                        print(f"Error processing {image_path}: {e}")
+                    finally:
+                        await asyncio.sleep(0)
 
-                except Exception as e:
-                    print(f"Error processing {image_path}: {e}")
+                await asyncio.sleep(5)

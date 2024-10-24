@@ -1,6 +1,5 @@
 from pipelearn.annotator.base_annotator import DataAnnotator, DetectionResult
 from typing import List, Optional
-import torch
 from transformers import pipeline
 import cv2
 import os

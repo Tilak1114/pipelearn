@@ -1,6 +1,6 @@
 {
     "data_publisher_config": {
-        "data_source": "./pipeline_data_store",
+        "data_source": "./dataset/train/images",
         "backend_kwargs": {
             "shared_memory_size_kb": 1024,
             "url": [
@@ -11,9 +11,13 @@
             "ipc_kind": "zenoh",
             "serializer": "msgpack",
             "root_key": "pipeline"
-        }
+        },
+        "publish_to":"data_source_data",
+        "subscribe_from":""
     },
     "annotator_config": {
+        "publish_to": "",
+        "subscribe_from":"data_source_data",
         "type": "grounding_dino",
         "labels": ["spoon", "fork"],
         "device": "cuda:1",
@@ -21,7 +25,8 @@
             "shared_memory_size_kb": 1024,
             "url": [
                 {
-                    "listen": "tcp/0.0.0.0:1234"
+                    "listen": "tcp/0.0.0.0:1234",
+                    "connect": "tcp/0.0.0.0:1235"
                 }
             ],
             "ipc_kind": "zenoh",
@@ -32,12 +37,12 @@
     "yolo_trainer_config": {
         "train_epochs":3,
         "device":"cuda:1",
-        "model_ckpt_path": "./ckpt/yolo_model.pt",
+        "model_ckpt_dir": "./ckpt",
         "backend_kwargs": {
             "shared_memory_size_kb": 1024,
             "url": [
                 {
-                    "listen": "tcp/0.0.0.0:1234"
+                    "listen": "tcp/0.0.0.0:1235"
                 }
             ],
             "ipc_kind": "zenoh",
